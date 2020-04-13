@@ -330,7 +330,11 @@ function drawPauseButton() {
   }, pauseCtx);
 
   pauseCtx.fillStyle = p.innerColor;
-  if(!pause) {
+  if(finished) {
+    pauseCtx.font = p.radius*1.8 + "px Arial";
+    pauseCtx.fillText("R", p.x+p.radius/3, p.height-p.height/6);
+  }
+  else if(!pause) {
     let aux = pauseButton;
     let rect = {
       x: aux.x+aux.width/5,
@@ -395,8 +399,8 @@ function render() {
 	if(!started)
 		draw.fillText("Tap the play button to start!", 0, height - floorHeight/10);
 	else if(finished)
-		draw.fillText("You losed 0:\n"
-		+ "Tap the pause button to restart!", 0, height - floorHeight/10);
+		draw.fillText("You losed :0"
+		+ "Tap the R button to restart!", 0, height - floorHeight/10);
 }
 
 //==========================================
@@ -452,6 +456,12 @@ window.addEventListener("keydown", function(key) {
   if((key.key == "I" || key.key == "i") && !control) { // don't show the information alert if the user try to inspect the game
     if(pause || finished || !started)
       info();
+  }
+  if((key.key == "R" || key.key == "r") && !control) { // don't restart if the user try to inspect the game
+    if(finished) {
+      restart();
+      pause = true;
+    }
   }
   if(key.key == "Control" && !control)
     control = true;

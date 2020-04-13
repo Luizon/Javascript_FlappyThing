@@ -506,11 +506,12 @@ function info() {
   + "Enter \"sure\" if you'll do 8]"
   + "\n\nAlso, if you want to see some other"
   + " projects, you can visit my Github. Write"
-  + " \"github\" if you want to go thete 8]", "Nah")
+  + " \"github\" if you want to go there 8]", "Nah")
   if(answer == "sure") {
     const alertMessage = "In case mailto won't work, "
     + "here you have my mail in your clipboard :)"
-    + "\n\npluizoncv@gmail.com";
+    + "\n\npluizoncv@gmail.com"
+    + "\n\nNote: It could be that neither of those work properly if you're using a Data Saver mode in your browser or device";
     alert(alertMessage);
 
     // doing weird things in order to copy to clipboard
@@ -522,8 +523,8 @@ function info() {
     document.body.removeChild(txtArea);
 
     // trying to redirect the user to the mail thing
-    var mailMessage = "Hey dude, I found some things you have to fix in that flappy bird copy you did in DCoder.";
-    var subject = "Fix this bugs from your DCoder Flappy Thing, folk";
+    var mailMessage = "Hey dude, I found some things you have to fix in that Flappy Bird copy you uploaded to GitHub.";
+    var subject = "Fix this bugs from your GitHub Flappy Thing, folk";
     document.location.href = "mailto:pluizoncv@gmail.com?"
     + "subject=" + encodeURIComponent(subject)
     + "&body=" + encodeURIComponent(mailMessage);

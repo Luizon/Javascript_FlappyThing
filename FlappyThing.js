@@ -399,8 +399,8 @@ function render() {
 	if(!started)
 		draw.fillText("Tap the play button to start!", 0, height - floorHeight/10);
 	else if(finished)
-		draw.fillText("You losed :0"
-		+ "Tap the R button to restart!", 0, height - floorHeight/10);
+		draw.fillText("You lost :0!"
+		+ "  Tap the R button to restart!", 0, height - floorHeight/10);
 }
 
 //==========================================
@@ -497,33 +497,17 @@ function restart() {
 }
 
 function info() {
-  let answer = prompt("Flappy Thing: just an awful Flappy Bird copy 8]"
+  let answer = prompt("Flappy Thing: just an awful Flappy Bird wannabe 8]"
   + "\nMade by: P_Luizon"
   + "\n\n"
-  + "If you find any bug feel free "
-  + "to tell me about it."
+  + "If you find any bug please feel free to tell me about it."
   + "\n\n"
   + "Enter \"sure\" if you'll do 8]"
-  + "\n\nAlso, if you want to see some other"
-  + " projects, you can visit my Github. Write"
+  + "\n\nAlso, if you want to see some other projects, you can visit my Github. Write"
   + " \"github\" if you want to go there 8]", "Nah")
   if(answer == "sure") {
-    const alertMessage = "In case mailto won't work, "
-    + "here you have my mail in your clipboard :)"
-    + "\n\npluizoncv@gmail.com"
-    + "\n\nNote: It could be that neither of those work properly if you're using a Data Saver mode in your browser or device";
-    alert(alertMessage);
-
-    // doing weird things in order to copy to clipboard
-    const txtArea = document.createElement('textarea');
-    txtArea.value = "pluizoncv@gmail.com";
-    document.body.appendChild(txtArea);
-    txtArea.select();
-    document.execCommand('copy');
-    document.body.removeChild(txtArea);
-
     // trying to redirect the user to the mail thing
-    var mailMessage = "Hey dude, I found some things you have to fix in that Flappy Bird copy you uploaded to GitHub.";
+    var mailMessage = "Hey dude, I found some things you have to fix in that Flappy Bird wannabe you made.";
     var subject = "Fix this bugs from your GitHub Flappy Thing, folk";
     document.location.href = "mailto:pluizoncv@gmail.com?"
     + "subject=" + encodeURIComponent(subject)

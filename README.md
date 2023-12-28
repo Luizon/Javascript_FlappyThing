@@ -1,3 +1,3 @@
 # Javascript FlappyThing 
 
-[try online](https://luizon.github.io/Javascript_FlappyThing/)
+[try online](https://luizon.dev/Javascript_FlappyThing/)

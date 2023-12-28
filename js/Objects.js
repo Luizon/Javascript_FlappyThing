@@ -129,7 +129,7 @@ class Wall {
 	}
 	
 	move() {
-		// if the player losed, the walls will run to their places
+		// if the player lost, the walls will run to their places
 		if(finished) {
 			if(this.x<this.initialX)
 				this.x+=width/fps;

@@ -2,15 +2,25 @@
 <html>
   <head>
     <link rel="stylesheet" type="text/css" href="FlappyThing.css">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no"
-          charset="UTF-8">
+    <meta name="viewport">
+    <meta content="width=device-width, user-scalable=no">
+    <meta charset="UTF-8">
+		<meta property="og:title" content="Flappy Thing">
+		<meta property="og:description" content="A Javascript Flappy Bird wannabe.">
+		<meta property="og:image" content="https://flappything.luizon.com/fav.png">
+		<meta property="og:url" content="https://flappything.luizon.com/">
+		<meta name="twitter:card" content="summary">
+		<meta name="twitter:title" content="Flappy Thing">
+		<meta name="twitter:description" content="A Javascript Flappy Bird wannabe.">
+		<meta name="twitter:image" content="https://flappything.luizon.com/fav.png">
+		<meta name="twitter:url" content="https://flappything.luizon.com/">
+		<link rel="shortcut icon" href="fav.png" type="image/png">
     <title>Flappy Thing 8]</title>
   </head>
   <body>
-    <canvas id="pause" hidden></canvas> <!-- this one is to make an off screen image and draw it with alpha for thd buttons -->
+    <canvas id="pause" hidden></canvas>
     <canvas id="canvas">
-      Your browser don't allow canvas. Try with Google Chrome or something else, I don't know.
+      Your browser doesn't allow canvas. Try with Google Chrome or something else, I don't know.
     </canvas>
     
     <script src="./js/Globals.js"></script>

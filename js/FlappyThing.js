@@ -64,7 +64,7 @@ canvas.addEventListener("click", function(click) {
 
 // key events, if the user have a keyboard
 window.addEventListener("keydown", function(key) {
-  console.log(key)
+  // console.log(key)
   if(key.key == "Enter" && !enter) {
     pause = !pause;
     started = true;

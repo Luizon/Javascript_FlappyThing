@@ -50,11 +50,22 @@ canvas.addEventListener("click", function(click) {
     width: infoButton.width,
     height: infoButton.height,
   };
-  if(pause || !started || finished)
+  let L = {
+    x: loginButton.x,
+    y: pauseButton.yFalse + loginButton.y,
+    width: loginButton.width,
+    height: loginButton.height,
+  };
+  if(pause || !started || finished) {
     if(pointCollision(click.x, click.y, i)) {
       info();
       return;
     }
+    if(pointCollision(click.x, click.y, L)) {
+      login();
+      return;
+    }
+  }
   
   if(pause)
   	return;
@@ -86,7 +97,7 @@ window.addEventListener("keydown", function(key) {
   }
   if(key.key == "Control" && !control)
     control = true;
-  if(key.keyCode == 32 && !space) {
+  if(key.key == " " && !space) {
     if(!pause) { // there's no hop if the user is on pause 8]
       player.hop();
       space = true;
@@ -99,7 +110,7 @@ window.addEventListener("keyup", function(key) {
     control = false;
   if(key.key == "Enter")
     enter = false;
-  if(key.keyCode == 32)
+  if(key.key == " ")
     space = false;
 });
 
@@ -118,25 +129,42 @@ function restart() {
 }
 
 function info() {
-  let answer = prompt("Flappy Thing: just an awful Flappy Bird wannabe 8]"
-    + "\nMade by: P_Luizon"
-    + "\n\n"
-    + "\n\nIf you want to see this and other open source code, you can visit my Github. "
-    + "Write \"github\" if you want to go there 8]",
-  "Nah")
+  bootbox.alert("<h3>Flappy Thing</h3> just an awful Flappy Bird wannabe 8]"
+    + "<br><br><i>Made by: P_Luizon</i>")
+}
 
-  if(answer == "sure") {
-    var mailMessage = "Hey dude, I found some stuff you have to fix in that Flappy Bird wannabe you made.";
-    var subject = "Fix this bugs from your GitHub Flappy Thing, folk";
-    document.location.href = "mailto:pluizoncv@gmail.com?"
-    + "subject=" + encodeURIComponent(subject)
-    + "&body=" + encodeURIComponent(mailMessage);
-    
-    return;
-  }
-  if(answer == "github") {
-    // trying to redirect the user to my github
-    document.location.href = "https://github.com/luizon";
+function login() {
+  let form = $("<form id='login-form' method='post' action='https://flappything-api.luizon.com/login'><label id='writeAlphanumeric' for='login-form' class='form-label text-danger' hidden>Please, write only alphanumeric characters (underscores _ are allowed).</label></form>")
+  let inputNickname = $('<div class="mb-3"><label for="nickname" class="form-label">Username</label><input class="form-control" type="text" id="nickname" name="nickname" placeholder="Username" required=""><i class="validation"><span></span><span></span></i></div>');
+  let inputPass = $('<div class="mb-3"><label for="password" class="form-label">Password</label><input class="form-control" type="password" id="password" name="password" placeholder="Password" required=""><i class="validation"><span></span><span></span></i></div>');
+  let divSubmit = $('<div class="mb-3"></div>');
+  let btnSubmit = $('<button class="btn btn-primary" type="submit">Login</button>');
+  form.append(inputNickname);
+  form.append(inputPass);
+  divSubmit.append(btnSubmit);
+  form.append(divSubmit);
+  
+  let divCreateAccount = $('<div class="justify-content-center d-flex"></div>');
+  let divCenteredCreateAccount = $('<div><span>First time here? </span></div>');
+  let btnCreateAccount = $('<button class="btn btn-secondary" type="submit" formaction="https://flappything-api.luizon.com/users">Create a new account</button>');
+  divCenteredCreateAccount.append(btnCreateAccount);
+  divCenteredCreateAccount.append($("<span> using this info</span>"));
+  divCreateAccount.append(divCenteredCreateAccount);
+  form.append(divCreateAccount);
+ 
+  inputNickname.on("keypress", e => { onlyAlphanumeric(e.key, e); });
+  
+  bootbox.dialog({
+    title: "Login",
+    message: form,
+  });
+}
+
+function onlyAlphanumeric(key, e) {
+	var letters = /^\w+$/gi; //i means ignorecase
+	if (!(key).match(letters)) {
+    $("#writeAlphanumeric")[0].hidden = false;
+    e.preventDefault();
   }
 }
 

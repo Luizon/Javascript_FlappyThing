@@ -91,8 +91,10 @@ function drawPauseButton() {
 
 function drawButtons() {
 	drawPauseButton();
-	if(pause || !started || finished)
+	if(pause || !started || finished) {
 		drawSmallButton(infoButton);
+		drawSmallButton(loginButton);
+  }
 	else {
 		// Store the current transformation matrix
 		pauseCtx.save();

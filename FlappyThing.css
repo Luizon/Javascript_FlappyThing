@@ -4,3 +4,7 @@
     overflow-x: hidden;
     overflow-y: hidden;
 }
+
+.bootbox-alert > .modal-dialog > .modal-content > .modal-header {
+    display: none;
+}

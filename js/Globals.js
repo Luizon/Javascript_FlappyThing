@@ -28,3 +28,4 @@
   var wall;
   var pauseButton;
   var infoButton;
+  var loginButton;

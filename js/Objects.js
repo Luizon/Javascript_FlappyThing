@@ -18,29 +18,41 @@ export function initializeObjects() {
 	// json's
 	let d = width<height?(width/3):(height/3);
 	pauseButton = {
-    	x: width/2 - d/2,
-    	y: 0,
-    	yFalse: 0,
-    	width: d,
-    	height: d,
-    	radius: d/2,
-    	color: "#420666",
-    	innerColor: "#AAA",
-    	alpha: "0.5",
-    };
-    pauseCanvas.height = pauseButton.radius*2;
-    pauseButton.yFalse = (height - pauseButton.height)/2; // this one is the real position in the canvas "canvas", y is the position in the canvas "pauseCanvas"
-    infoButton = {
-    	x: (width - (width/2 + pauseButton.radius))/2 - d/4,
-    	y: d/4,
-    	width: d/2,
-    	height: d/2,
-    	radius: d/4,
-    	color: "#210333",
-    	innerColor: "#AAA",
-    	font: d/10*4 + "px Arial",
-    	innerText: " i",
-    	alpha: "0.5",
+		x: width/2 - d/2,
+		y: 0,
+		yFalse: 0,
+		width: d,
+		height: d,
+		radius: d/2,
+		color: "#420666",
+		innerColor: "#AAA",
+		alpha: "0.5",
+	};
+	pauseCanvas.height = pauseButton.radius*2;
+	pauseButton.yFalse = (height - pauseButton.height)/2; // this one is the real position in the canvas "canvas", y is the position in the canvas "pauseCanvas"
+	infoButton = {
+		x: (width - (width/2 + pauseButton.radius))/2 - d/4,
+		y: d/4,
+		width: d/2,
+		height: d/2,
+		radius: d/4,
+		color: "#210333",
+		innerColor: "#AAA",
+		font: d/10*4 + "px Arial",
+		innerText: " i",
+		alpha: "0.5",
+	};
+	loginButton = {
+		x: (width + (width/2 + pauseButton.radius))/2 - d/4,
+		y: d/4,
+		width: d/2,
+		height: d/2,
+		radius: d/4,
+		color: "#0808",
+		innerColor: "#AAA",
+		font: d/10*4 + "px Arial",
+		innerText: " L",
+		alpha: "0.5",
 	};
 }
 

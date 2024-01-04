@@ -39,7 +39,7 @@ export function initializeObjects() {
 		color: "#210333",
 		innerColor: "#AAA",
 		font: d/10*4 + "px Arial",
-		innerText: " i",
+		innerText: "  i",
 		alpha: "0.5",
 	};
 	loginButton = {

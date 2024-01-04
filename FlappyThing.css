@@ -5,6 +5,6 @@
     overflow-y: hidden;
 }
 
-.bootbox-alert > .modal-dialog > .modal-content > .modal-header {
+.no-title > .modal-dialog > .modal-content > .modal-header {
     display: none;
 }

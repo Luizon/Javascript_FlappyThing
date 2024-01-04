@@ -1,5 +1,6 @@
 import { initializeObjects } from "./Objects.js";
 import { render } from "./Drawing.js";
+var loadingMessage;
 
 //==========================================
 // DECLARING VARIABLES
@@ -129,27 +130,32 @@ function restart() {
 }
 
 function info() {
-  bootbox.alert("<h3>Flappy Thing</h3> just an awful Flappy Bird wannabe 8]"
-    + "<br><br><i>Made by: P_Luizon</i>")
+  bootbox.alert({
+    message: "<h3>Flappy Thing</h3> just an awful Flappy Bird wannabe 8]"
+    + "<br><br><i>Made by: P_Luizon</i>",
+    onEscape: true,
+    backdrop: true,
+    className: 'no-title',
+  });
 }
 
 function login() {
-  let form = $("<form id='login-form' method='post' action='https://flappything-api.luizon.com/login'><label id='writeAlphanumeric' for='login-form' class='form-label text-danger' hidden>Please, write only alphanumeric characters (underscores _ are allowed).</label></form>")
-  let inputNickname = $('<div class="mb-3"><label for="nickname" class="form-label">Username</label><input class="form-control" type="text" id="nickname" name="nickname" placeholder="Username" required=""><i class="validation"><span></span><span></span></i></div>');
-  let inputPass = $('<div class="mb-3"><label for="password" class="form-label">Password</label><input class="form-control" type="password" id="password" name="password" placeholder="Password" required=""><i class="validation"><span></span><span></span></i></div>');
-  let divSubmit = $('<div class="mb-3"></div>');
-  let btnSubmit = $('<button class="btn btn-primary" type="submit">Login</button>');
+  let form = $("<div><label id='writeAlphanumeric' for='login-form' class='form-label text-danger' hidden>Please, write only alphanumeric characters (underscores _ are allowed).</label></div>")
+  let inputNickname = $('<div class="mb-3"><label for="nickname" class="form-label">Username</label><input class="form-control" type="text" id="nickname" placeholder="Username" required=""><i class="validation"><span></span><span></span></i></div>');
+  let inputPass = $('<div class="mb-3"><label for="password" class="form-label">Password</label><input class="form-control" type="password" id="password" placeholder="Password" required=""><i class="validation"><span></span><span></span></i></div>');
+  let divLogin = $('<div class="mb-3"></div>');
+  let btnLogin = $('<button class="btn btn-primary">Login</button>');
   form.append(inputNickname);
   form.append(inputPass);
-  divSubmit.append(btnSubmit);
-  form.append(divSubmit);
+  divLogin.append(btnLogin);
+  form.append(divLogin);
   
   let divCreateAccount = $('<div class="justify-content-center d-flex"></div>');
-  let divCenteredCreateAccount = $('<div><span>First time here? </span></div>');
-  let btnCreateAccount = $('<button class="btn btn-secondary" type="submit" formaction="https://flappything-api.luizon.com/users">Create a new account</button>');
-  divCenteredCreateAccount.append(btnCreateAccount);
-  divCenteredCreateAccount.append($("<span> using this info</span>"));
-  divCreateAccount.append(divCenteredCreateAccount);
+  let divSignUp = $('<div><span>First time here? </span></div>');
+  let btnSignUp = $('<button class="btn btn-secondary">Create a new account</button>');
+  divSignUp.append(btnSignUp);
+  divSignUp.append($("<span> using this info</span>"));
+  divCreateAccount.append(divSignUp);
   form.append(divCreateAccount);
  
   inputNickname.on("keypress", e => { onlyAlphanumeric(e.key, e); });
@@ -157,6 +163,92 @@ function login() {
   bootbox.dialog({
     title: "Login",
     message: form,
+    onEscape: true,
+    backdrop: true,
+  });
+
+  setTimeout(e => $("#nickname").focus(), 666);
+
+  btnLogin.on('click', evt => {
+    loadingMessage = bootbox.dialog({
+      onEscape: false,
+      backdrop: false,
+      closeButton: false,
+      className: 'no-title',
+      message: "<span class='text-center'>Loading...</span>"
+    });
+    loginAjax();
+  });
+
+  btnSignUp.on('click', evt => {
+    loadingMessage = bootbox.dialog({
+      onEscape: false,
+      backdrop: false,
+      closeButton: false,
+      className: 'no-title',
+      message: "<span class='text-center'>Signing up...</span>"
+    });
+    signUpAjax();
+  });
+}
+
+function loginAjax() {
+  $.ajax({
+    url: 'https://flappything-api.luizon.com/login',
+    method: 'POST',
+    dataType: 'json',
+    success: e => {
+      bootbox.alert({
+        onEscape: false,
+        backdrop: false,
+        title: 'Ebic',
+        message: "You are real."
+            + "<br>Congratulations.",
+        callback: e => loadingMessage.modal('hide'),
+      });
+      console.log(e);
+    },
+    error: e => {
+      console.log(e);
+      bootbox.alert({
+        onEscape: false,
+        backdrop: false,
+        title: 'Error',
+        message: "Something went wrong. Looks like our server is dead or something."
+            + "<br>Try again.",
+        callback: e => loadingMessage.modal('hide'),
+      });
+    }
+  });
+}
+
+function signUpAjax() {
+  $.ajax({
+    url: 'https://flappything-api.luizon.com/login',
+    method: 'POST',
+    dataType: 'json',
+    success: e => {
+      bootbox.alert({
+        onEscape: false,
+        backdrop: false,
+        title: 'Ebic',
+        message: "NOW you are real."
+            + "<br>Congratulations.",
+        callback: e => loadingMessage.modal('hide'),
+      });
+      console.log(e);
+    },
+    error: e => {
+      console.log(e);
+      bootbox.alert({
+        onEscape: false,
+        backdrop: false,
+        title: 'Error',
+        message: "Something went wrong. Looks like our server is dead or something."
+            + "<br>Try again.",
+        callback: e => loadingMessage.modal('hide'),
+      });
+    }
   });
 }
 

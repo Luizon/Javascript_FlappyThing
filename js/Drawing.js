@@ -45,7 +45,7 @@ function drawSmallButton(json) {
 
   pauseCtx.fillStyle = json.innerColor;
   pauseCtx.font = json.font;
-  pauseCtx.fillText(json.innerText, json.x+json.radius/3, json.y+json.radius/3*5);
+  pauseCtx.fillText(json.innerText, json.x, json.y+json.radius/3*5);
 }
 
 function drawPauseButton() {
@@ -126,9 +126,14 @@ export function render() {
 	
 	draw.fillStyle = "#000";
 	draw.font = hudFontSize/2 + "px Arial";
-	if(!started)
-		draw.fillText("Tap the play button to start!", 0, height - floorHeight/10);
-	else if(finished)
-		draw.fillText("You lost :0!"
-		+ "  Tap the R button to restart!", 0, height - floorHeight/10);
+	if(!started) {
+    let text = "Tap the play button to start!";
+    let textWidth = draw.measureText(text).width;
+		draw.fillText(text, width/2 - textWidth/2, height - floorHeight/4);
+  }
+	else if(finished) {
+    let text = "You lost :0!  Tap the R button to restart!";
+    let textWidth = draw.measureText(text).width;
+    draw.fillText(text, width/2 - textWidth/2, height - floorHeight/4);
+  }
 }

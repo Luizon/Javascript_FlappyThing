@@ -1,6 +1,6 @@
 import { initializeObjects } from "./Objects.js";
 import { render } from "./Drawing.js";
-var loadingMessage;
+var loginModal;
 
 //==========================================
 // DECLARING VARIABLES
@@ -77,7 +77,7 @@ canvas.addEventListener("click", function(click) {
 // key events, if the user have a keyboard
 window.addEventListener("keydown", function(key) {
   // console.log(key)
-  if(key.key == "Enter" && !enter) {
+  if(key.key == "Enter" && !enter && $(".modal")[0] === undefined) {
     pause = !pause;
     started = true;
     render();
@@ -86,11 +86,11 @@ window.addEventListener("keydown", function(key) {
     	restart();
     enter = true;
   }
-  if((key.key == "I" || key.key == "i") && !control) { // don't show the information alert if the user try to inspect the game
+  if((key.key == "I" || key.key == "i") && !control && $(".modal")[0] === undefined) { // don't show the information alert if the user try to inspect the game
     if(pause || finished || !started)
       info();
   }
-  if((key.key == "R" || key.key == "r") && !control) { // don't restart if the user try to inspect the game
+  if((key.key == "R" || key.key == "r") && !control && $(".modal")[0] === undefined) { // don't restart if the user try to inspect the game
     if(finished) {
       restart();
       pause = true;
@@ -99,7 +99,7 @@ window.addEventListener("keydown", function(key) {
   if(key.key == "Control" && !control)
     control = true;
   if(key.key == " " && !space) {
-    if(!pause) { // there's no hop if the user is on pause 8]
+    if(!pause) { // on pause you can't jump 8]
       player.hop();
       space = true;
     }
@@ -140,9 +140,9 @@ function info() {
 }
 
 function login() {
-  let form = $("<div><label id='writeAlphanumeric' for='login-form' class='form-label text-danger' hidden>Please, write only alphanumeric characters (underscores _ are allowed).</label></div>")
-  let inputNickname = $('<div class="mb-3"><label for="nickname" class="form-label">Username</label><input class="form-control" type="text" id="nickname" placeholder="Username" required=""><i class="validation"><span></span><span></span></i></div>');
-  let inputPass = $('<div class="mb-3"><label for="password" class="form-label">Password</label><input class="form-control" type="password" id="password" placeholder="Password" required=""><i class="validation"><span></span><span></span></i></div>');
+  let form = $("<div><div><h3 id='loadingText' class='text-center form-label' hidden>Please wait</h3></div><label id='writeAlphanumeric' for='login-form' class='form-label text-danger' hidden>Please, write only alphanumeric characters (underscores _ are allowed).</label></div>")
+  let inputNickname = $('<div class="mb-3"><label for="nickname" class="form-label">Username</label><input class="form-control" type="text" id="nickname" placeholder="Username"></div>');
+  let inputPass = $(`<div class="mb-3"><label for="password" class="form-label">Password</label><input class="form-control" type="password" id="password" placeholder="Password"></div><div><label id='wrongPass' for='login-form' class='form-label text-danger' hidden>Wrong password, try again.</label></div>`);
   let divLogin = $('<div class="mb-3"></div>');
   let btnLogin = $('<button class="btn btn-primary">Login</button>');
   form.append(inputNickname);
@@ -160,7 +160,7 @@ function login() {
  
   inputNickname.on("keypress", e => { onlyAlphanumeric(e.key, e); });
   
-  bootbox.dialog({
+  loginModal = bootbox.dialog({
     title: "Login",
     message: form,
     onEscape: true,
@@ -170,26 +170,30 @@ function login() {
   setTimeout(e => $("#nickname").focus(), 666);
 
   btnLogin.on('click', evt => {
-    loadingMessage = bootbox.dialog({
-      onEscape: false,
-      backdrop: false,
-      closeButton: false,
-      className: 'no-title',
-      message: "<span class='text-center'>Loading...</span>"
-    });
+    if(areTextInputsEmpty())
+      return;
+    $("#loadingText")[0].hidden = false;
+    $("#nickname")[0].disabled = true;
+    $("#password")[0].disabled = true;
     loginAjax();
   });
 
   btnSignUp.on('click', evt => {
-    loadingMessage = bootbox.dialog({
-      onEscape: false,
-      backdrop: false,
-      closeButton: false,
-      className: 'no-title',
-      message: "<span class='text-center'>Signing up...</span>"
-    });
+    if(areTextInputsEmpty())
+      return;
+    $("#loadingText")[0].hidden = false;
+    $("#nickname")[0].disabled = true;
+    $("#password")[0].disabled = true;
     signUpAjax();
   });
+}
+
+function areTextInputsEmpty() {
+  if($("#nickname").val().length == 0)
+    return $("#nickname").focus();
+  if($("#password").val().length == 0)
+    return $("#password").focus();
+  return false;
 }
 
 function loginAjax() {
@@ -197,26 +201,42 @@ function loginAjax() {
     url: 'https://flappything-api.luizon.com/login',
     method: 'POST',
     dataType: 'json',
+    data: { nickname: $("#nickname").val(), password: $("#password").val() },
     success: e => {
+      console.log(e);
+      loginModal.modal('hide');
       bootbox.alert({
         onEscape: false,
         backdrop: false,
         title: 'Ebic',
         message: "You are real."
             + "<br>Congratulations.",
-        callback: e => loadingMessage.modal('hide'),
+        callback: e => {
+        },
       });
-      console.log(e);
     },
     error: e => {
       console.log(e);
+      $("#nickname")[0].disabled = false;
+      $("#password")[0].disabled = false;
+      $("#loadingText")[0].hidden = true;
+      if(e.status === 401) {
+        $("#wrongPass")[0].hidden = false;
+        $("#password").focus();
+        return;
+      }
+      let title = "Error " + e.status;
+      let message = "Something went wrong. Looks like our server is dead or something."
+          + "<br>Try again.";
       bootbox.alert({
         onEscape: false,
         backdrop: false,
-        title: 'Error',
-        message: "Something went wrong. Looks like our server is dead or something."
-            + "<br>Try again.",
-        callback: e => loadingMessage.modal('hide'),
+        title: title,
+        message: message,
+        callback: e => {
+          $("#wrongPass")[0].hidden = true;
+          $("#nickname").focus();
+        },
       });
     }
   });
@@ -224,9 +244,10 @@ function loginAjax() {
 
 function signUpAjax() {
   $.ajax({
-    url: 'https://flappything-api.luizon.com/login',
+    url: 'https://flappything-api.luizon.com/users',
     method: 'POST',
     dataType: 'json',
+    data: { nickname: $("#nickname").val(), password: $("#password").val() },
     success: e => {
       bootbox.alert({
         onEscape: false,
@@ -234,19 +255,23 @@ function signUpAjax() {
         title: 'Ebic',
         message: "NOW you are real."
             + "<br>Congratulations.",
-        callback: e => loadingMessage.modal('hide'),
       });
       console.log(e);
     },
     error: e => {
       console.log(e);
+      $("#nickname")[0].disabled = false;
+      $("#password")[0].disabled = false;
       bootbox.alert({
         onEscape: false,
         backdrop: false,
-        title: 'Error',
+        title: 'Error ' + e.status,
         message: "Something went wrong. Looks like our server is dead or something."
             + "<br>Try again.",
-        callback: e => loadingMessage.modal('hide'),
+        callback: e => {
+          $("#wrongPass")[0].hidden = true;
+          $("#nickname").focus();
+        },
       });
     }
   });

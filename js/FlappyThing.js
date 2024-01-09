@@ -141,10 +141,10 @@ function info() {
 
 function login() {
   let form = $("<div><div><h3 id='loadingText' class='text-center form-label' hidden>Please wait</h3></div><label id='writeAlphanumeric' for='login-form' class='form-label text-danger' hidden>Please, write only alphanumeric characters (underscores _ are allowed).</label></div>")
-  let inputNickname = $('<div class="mb-3"><label for="nickname" class="form-label">Username</label><input class="form-control" type="text" id="nickname" placeholder="Username"></div>');
-  let inputPass = $(`<div class="mb-3"><label for="password" class="form-label">Password</label><input class="form-control" type="password" id="password" placeholder="Password"></div><div><label id='wrongPass' for='login-form' class='form-label text-danger' hidden>Wrong password, try again.</label></div>`);
+  let inputNickname = $('<div class="mb-3"><label for="nickname" class="form-label">Username</label><input name="nickname" class="form-control" type="text" id="nickname" placeholder="Username"></div><div><label id="wrongUser" for="login-form" class="form-label text-danger" hidden>Someone is already using that username, try another one.</label></div>');
+  let inputPass = $(`<div class="mb-3"><label for="password" class="form-label">Password</label><input name="password" class="form-control" type="password" id="password" placeholder="Password"></div><div><label id='wrongPass' for='login-form' class='form-label text-danger' hidden>Wrong password, try again.</label></div>`);
   let divLogin = $('<div class="mb-3"></div>');
-  let btnLogin = $('<button class="btn btn-primary">Login</button>');
+  let btnLogin = $('<button id="btnLogin" class="btn btn-primary">Login</button>');
   form.append(inputNickname);
   form.append(inputPass);
   divLogin.append(btnLogin);
@@ -152,12 +152,12 @@ function login() {
   
   let divCreateAccount = $('<div class="justify-content-center d-flex"></div>');
   let divSignUp = $('<div><span>First time here? </span></div>');
-  let btnSignUp = $('<button class="btn btn-secondary">Create a new account</button>');
+  let btnSignUp = $('<button id="btnPass" class="btn btn-secondary">Create a new account</button>');
   divSignUp.append(btnSignUp);
   divSignUp.append($("<span> using this info</span>"));
   divCreateAccount.append(divSignUp);
   form.append(divCreateAccount);
- 
+
   inputNickname.on("keypress", e => { onlyAlphanumeric(e.key, e); });
   
   loginModal = bootbox.dialog({
@@ -169,23 +169,35 @@ function login() {
 
   setTimeout(e => $("#nickname").focus(), 666);
 
-  btnLogin.on('click', evt => {
+  let loginEvent = evt => {
     if(areTextInputsEmpty())
       return;
-    $("#loadingText")[0].hidden = false;
-    $("#nickname")[0].disabled = true;
-    $("#password")[0].disabled = true;
+    setLoading(true);
     loginAjax();
-  });
+  };
+  inputNickname.on("keypress", e => e.key == "Enter" ? loginEvent() : 0 )
+  inputPass.on("keypress", e => e.key == "Enter" ? loginEvent() : 0)
+  btnLogin.on('click', loginEvent);
 
   btnSignUp.on('click', evt => {
     if(areTextInputsEmpty())
       return;
-    $("#loadingText")[0].hidden = false;
-    $("#nickname")[0].disabled = true;
-    $("#password")[0].disabled = true;
+    setLoading(true);
     signUpAjax();
   });
+}
+
+function setLoading(flag) {
+  if(flag) {
+    $("#wrongPass")[0].hidden = true;
+    $("#wrongUser")[0].hidden = true;
+    $("#writeAlphanumeric")[0].hidden = true;
+  }
+  $("#loadingText")[0].hidden = !flag;
+  $("#nickname")[0].disabled = flag;
+  $("#password")[0].disabled = flag;
+  $("#btnLogin")[0].disabled = flag;
+  $("#btnPass")[0].disabled = flag;
 }
 
 function areTextInputsEmpty() {
@@ -217,9 +229,7 @@ function loginAjax() {
     },
     error: e => {
       console.log(e);
-      $("#nickname")[0].disabled = false;
-      $("#password")[0].disabled = false;
-      $("#loadingText")[0].hidden = true;
+      setLoading(false);
       if(e.status === 401) {
         $("#wrongPass")[0].hidden = false;
         $("#password").focus();
@@ -249,6 +259,7 @@ function signUpAjax() {
     dataType: 'json',
     data: { nickname: $("#nickname").val(), password: $("#password").val() },
     success: e => {
+      console.log(e);
       bootbox.alert({
         onEscape: false,
         backdrop: false,
@@ -256,12 +267,15 @@ function signUpAjax() {
         message: "NOW you are real."
             + "<br>Congratulations.",
       });
-      console.log(e);
     },
     error: e => {
       console.log(e);
-      $("#nickname")[0].disabled = false;
-      $("#password")[0].disabled = false;
+      setLoading(false);
+      if(e.status === 401) {
+        $("#wrongUser")[0].hidden = false;
+        $("#nickname").focus();
+        return;
+      }
       bootbox.alert({
         onEscape: false,
         backdrop: false,
@@ -269,7 +283,6 @@ function signUpAjax() {
         message: "Something went wrong. Looks like our server is dead or something."
             + "<br>Try again.",
         callback: e => {
-          $("#wrongPass")[0].hidden = true;
           $("#nickname").focus();
         },
       });
